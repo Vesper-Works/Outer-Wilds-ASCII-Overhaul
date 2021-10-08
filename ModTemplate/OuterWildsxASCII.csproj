@@ -283,7 +283,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComputeShaderHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShaderApplier.cs" />
     <Compile Include="StarterBehaviour.cs" />
