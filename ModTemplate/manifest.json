@@ -1,0 +1,9 @@
+{
+  "filename": "OuterWildsxASCII.dll",
+  "author": "Vesper",
+  "name": "OuterWildsxASCII",
+  "uniqueName": "Vesper.OuterWildsxASCII",
+  "description": "Turns the universe into ASCII!",
+  "version": "0.1.0",
+  "owmlVersion": "0.7.3"
+}
