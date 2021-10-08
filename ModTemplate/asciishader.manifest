@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 2911948411
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 10e4a9adc60cc9a43a8b622086484343
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 1fe7f94906f226b673154de66f8357c9
+HashAppended: 0
+ClassTypes:
+- Class: 72
+  Script: {instanceID: 0}
+Assets:
+- Assets/ASCIIShader.compute
+Dependencies: []
