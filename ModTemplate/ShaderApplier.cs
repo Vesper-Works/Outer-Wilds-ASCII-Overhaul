@@ -1,23 +1,26 @@
 ﻿using OWML.ModHelper;
-using OWML.ModHelper.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using OWML.Common;
 using UnityEngine;
 
 namespace OuterWildsxASCII
 {
-    class ShaderApplier : ModBehaviour
+    public class ShaderApplier : MonoBehaviour
     {
         RenderTexture cameraTexture;
         RenderTexture asciiTexture;
         ComputeShader computeShader;
-        bool running = false;
+        new IModHelper ModHelper { get => StarterBehaviour.Instance.ModHelper; }
 
         private void Start()
         {
+            ModHelper.Console.WriteLine(this.ToString());
+            Textures();
+            ComputeShader();
+            CameraWork();
+        }
 
+        private void Textures()
+        {
             ModHelper.Console.WriteLine("Creating textures...");
             asciiTexture = new RenderTexture(1920, 1080, 0);
             asciiTexture.enableRandomWrite = true;
@@ -28,45 +31,60 @@ namespace OuterWildsxASCII
             cameraTexture.enableRandomWrite = true;
             cameraTexture.filterMode = FilterMode.Point;
             cameraTexture.Create();
-
             ModHelper.Console.WriteLine("Done!");
+        }
 
-            ModHelper.Console.WriteLine("Loading bundle...");
+        private void ComputeShader()
+        {
+            ModHelper.Console.WriteLine("Loading compute shader...");
 
             var shaderbundle = ModHelper.Assets.LoadBundle("asciishader");
 
-            ModHelper.Console.WriteLine("Loading compute shader...");
-
             computeShader = shaderbundle.LoadAsset<ComputeShader>("ASCIIShader");
-
             ModHelper.Console.WriteLine("Done!");
+        }
+
+        private void CameraWork()
+        {
             ModHelper.Console.WriteLine("Getting cameras...");
-            ModHelper.Console.WriteLine("Instantiating texture cam");
+            //ModHelper.Console.WriteLine("Instantiating texture cam");
             GameObject textureCameraGO = new GameObject();
-            Camera camera = textureCameraGO.AddComponent<Camera>();
-            ModHelper.Console.WriteLine("Setting parent");
+            Camera textureCamera = textureCameraGO.AddComponent<Camera>();
+            textureCameraGO.AddComponent<OWCamera>();
+        
             textureCameraGO.transform.SetParent(transform);
-            ModHelper.Console.WriteLine("Setting target texture");
-            camera.targetTexture = cameraTexture;
-            running = true;
+            textureCameraGO.transform.position = Vector3.zero;
+            textureCameraGO.transform.rotation = Quaternion.identity;
+            textureCamera.CopyFrom(GetComponent<Camera>());
+
+            GetComponent<Camera>().targetTexture = cameraTexture;
             ModHelper.Console.WriteLine("Done!");
+
+            AddACIIRenderingToCamera(textureCameraGO);
+
         }
-
-
-        void Update()
+        private void AddACIIRenderingToCamera(GameObject camera)
         {
-            if (!running) { return; }
-            computeShader.SetTexture(0, "cameraTexture", cameraTexture);
-            computeShader.SetTexture(0, "asciiTexture", asciiTexture);
-            computeShader.SetFloat("scaleFactor", 1);
-            computeShader.Dispatch(0, 1920 / (8 * 8), 1080 / (8 * 8), 1);
+            camera.AddComponent<ASCIIRendering>().Ready(cameraTexture, asciiTexture, computeShader);
         }
-
-        private void OnRenderImage(RenderTexture source, RenderTexture destination)
+        OWCamera CopyOWCamera(OWCamera original, GameObject destination)
         {
-            if (!running) { return; }
-            Graphics.Blit(asciiTexture, destination);
+            OWCamera copy = destination.AddComponent<OWCamera>();
+            // Copied fields can be restricted with BindingFlags
+            System.Reflection.FieldInfo[] fields = typeof(OWCamera).GetFields();
+            foreach (System.Reflection.FieldInfo field in fields)
+            {
+                field.SetValue(copy, field.GetValue(original));
+            }
+            System.Reflection.PropertyInfo[] properties = typeof(OWCamera).GetProperties();
+            foreach (System.Reflection.PropertyInfo property in properties)
+            {
+                if (!property.CanWrite) { continue; }
+                property.SetValue(copy, property.GetValue(original, null), null);
+            }
+            return copy;
         }
+  
     
     }
 }

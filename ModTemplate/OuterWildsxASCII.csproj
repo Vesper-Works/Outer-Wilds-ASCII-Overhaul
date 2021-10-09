@@ -283,6 +283,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ASCIIRendering.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StarterBehaviour.cs" />
     <Compile Include="ShaderApplier.cs" />

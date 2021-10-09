@@ -1,16 +1,16 @@
 ﻿using OWML.ModHelper;
-using OWML.Common;
 using UnityEngine;
 using OWML.ModHelper.Events;
-using System;
 
 namespace OuterWildsxASCII
 {
     public class StarterBehaviour : ModBehaviour
     {
+        public static StarterBehaviour Instance { get; set; }
         private void Start()
         {
-
+            ModHelper.Console.WriteLine(this.ToString());
+            Instance = this;
             ModHelper.Console.WriteLine("Skipping splash screen...");
             var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
             titleScreenAnimation.SetValue("_fadeDuration", 0);
