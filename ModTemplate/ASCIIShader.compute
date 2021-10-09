@@ -4,6 +4,7 @@
 RWTexture2D<float4> cameraTexture;
 RWTexture2D<float4> asciiTexture;
 float scaleFactor;
+float backBrightness;
 
 static int font8x8_basic[][8] = {
     { 0x18, 0x3C, 0x3C, 0x18, 0x18, 0x00, 0x18, 0x00},   // U+0021 (!) 0
@@ -144,7 +145,7 @@ void WriteAsciiCharacter(float2 position, float brightness, float3 colour)
            }
            else
            {
-              asciiTexture[float2(position.x + x, position.y + y)] = float4(colour * 0.1,0);
+              asciiTexture[float2(position.x + x, position.y + y)] = float4(colour * backBrightness,0);
            }
         }
     }

@@ -10,6 +10,20 @@ namespace OuterWildsxASCII
         RenderTexture asciiTexture;
         ComputeShader computeShader;
         bool running;
+        float scaleFactor
+        {
+            get
+            {
+                return float.Parse(StarterBehaviour.Instance.ModHelper.Config.Settings["ASCII scale"].ToString());
+            }
+        }  
+        float backBrightness
+        {
+            get
+            {
+                return float.Parse(StarterBehaviour.Instance.ModHelper.Config.Settings["Brightness behind ASCII (0 - 1)"].ToString());
+            }
+        }
         public void Ready(RenderTexture cameraTexture, RenderTexture asciiTexture, ComputeShader computeShader)
         {
             this.cameraTexture = cameraTexture;
@@ -22,7 +36,8 @@ namespace OuterWildsxASCII
             if (!running) { return; }
             computeShader.SetTexture(0, "cameraTexture", cameraTexture);
             computeShader.SetTexture(0, "asciiTexture", asciiTexture);
-            computeShader.SetFloat("scaleFactor", 1);
+            computeShader.SetFloat("scaleFactor", scaleFactor);
+            computeShader.SetFloat("backBrightness", backBrightness);
             computeShader.Dispatch(0, 1920 / (8 * 8), 1080 / (8 * 8), 1);
         }
 
