@@ -4,6 +4,6 @@
   "name": "OuterWildsxASCII",
   "uniqueName": "Vesper.OuterWildsxASCII",
   "description": "Turns the universe into ASCII! (C to toggle).",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "owmlVersion": "0.7.3"
 }
