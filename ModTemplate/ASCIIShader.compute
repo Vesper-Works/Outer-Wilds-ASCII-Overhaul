@@ -127,18 +127,35 @@ int GetCharacterFromBrightness(float brightness)
     return 32;
 }
 
-void WriteAsciiCharacter(float2 position, float brightness, float3 colour)
-{   
+void WriteAsciiCharacter(float2 position)
+{    
+    float3 colour;
+    //uint counter = 0;
+    //for(int i = 2; i < 6 * scaleFactor; i++){
+    //    for (int j = 2; j < 6 * scaleFactor; j++){
+    //        colour +=  cameraTexture[float2(position.x + i, position.y + j)].xyz;
+    //        if(cameraTexture[float2(position.x + i, position.y + j)].x + 
+    //           cameraTexture[float2(position.x + i, position.y + j)].y + 
+    //           cameraTexture[float2(position.x + i, position.y + j)].z > 0.05)
+    //           {
+    //               counter += 1;
+    //           }                    
+    //    }
+    //}
+    //if(counter == 0){colour = float3(0,0,0);}
+    //else {colour /= counter * scaleFactor * scaleFactor;}
+    colour = cameraTexture[position].xyz;
+    float brightness = (colour.x + colour.y + colour.z) / 3;
 
-    for(uint x = 0; x < 8 * scaleFactor; x++)
+    for(int x = 0; x < 8 * scaleFactor; x++)
     {
-        for (uint y = 0; y < 8 * scaleFactor; y++)
+        for (int y = 0; y < 8 * scaleFactor; y++)
         {
             
            int pixelPosition = ((x * 8)/ (8 * scaleFactor));
            int bitPosition = ((y * 8)/ (8 * scaleFactor));
 
-           bool set = ((font8x8_basic[brightness][pixelPosition] >> bitPosition) & 1) == 1;
+           bool set = ((font8x8_basic[GetCharacterFromBrightness(brightness)][pixelPosition] >> bitPosition) & 1) == 1;
            if(set)
            {
               asciiTexture[float2(position.x + x, position.y + y)] = float4(colour,0);
@@ -156,8 +173,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 {    
     if(scaleFactor <= 0){return;}
 
-    float brightness = (cameraTexture[id.xy* 8 *scaleFactor].x + cameraTexture[id.xy* 8 *scaleFactor].y + cameraTexture[id.xy*8 * scaleFactor].z) /3;
-    float3 colour = cameraTexture[id.xy* 8 *scaleFactor].xyz;
-    WriteAsciiCharacter(id.xy * 8 * scaleFactor, GetCharacterFromBrightness(brightness), colour);   
+    WriteAsciiCharacter(id.xy * 8 * scaleFactor);   
 }
 

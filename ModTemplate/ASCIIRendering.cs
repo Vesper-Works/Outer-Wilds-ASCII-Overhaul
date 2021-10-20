@@ -1,6 +1,7 @@
 ﻿using OWML.ModHelper;
 using OWML.Common;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace OuterWildsxASCII
 {
@@ -16,7 +17,7 @@ namespace OuterWildsxASCII
             {
                 return float.Parse(StarterBehaviour.Instance.ModHelper.Config.Settings["ASCII scale"].ToString());
             }
-        }  
+        }
         float backBrightness
         {
             get
@@ -33,7 +34,7 @@ namespace OuterWildsxASCII
         }
         private void Update()
         {
-            if (!running) { return; }
+            if (!running || Keyboard.current["h"].IsPressed()) { return; }
             computeShader.SetTexture(0, "cameraTexture", cameraTexture);
             computeShader.SetTexture(0, "asciiTexture", asciiTexture);
             computeShader.SetFloat("scaleFactor", scaleFactor);
@@ -43,8 +44,19 @@ namespace OuterWildsxASCII
 
         private void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            if (!running) { return; }
-            Graphics.Blit(asciiTexture, destination);
+            if (!running)
+            {
+                return;
+            }
+            if (Keyboard.current["h"].IsPressed())
+            {
+                Graphics.Blit(cameraTexture, destination);
+            }
+            else
+            {
+                Graphics.Blit(asciiTexture, destination);
+            }
+
         }
     }
 }

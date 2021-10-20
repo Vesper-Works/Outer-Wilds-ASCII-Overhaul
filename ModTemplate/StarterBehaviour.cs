@@ -1,5 +1,6 @@
 ﻿using OWML.ModHelper;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using OWML.ModHelper.Events;
 
 namespace OuterWildsxASCII
@@ -10,20 +11,18 @@ namespace OuterWildsxASCII
         RenderTexture asciiTexture;
         ComputeShader computeShader;
         Camera ASCIICamera;
-        bool asciiMode = true;
         Camera NormalCamera { get => Camera.main; }
         public static StarterBehaviour Instance { get; set; }
         private void Start()
         {
-            ModHelper.Console.WriteLine(this.ToString());
             Instance = this;
-            ModHelper.Console.WriteLine("Skipping splash screen...");
-            var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
-            titleScreenAnimation.SetValue("_fadeDuration", 0);
-            titleScreenAnimation.SetValue("_gamepadSplash", false);
-            titleScreenAnimation.SetValue("_introPan", false);
-            titleScreenAnimation.Invoke("FadeInTitleLogo");
-            ModHelper.Console.WriteLine("Done!");
+            //ModHelper.Console.WriteLine("Skipping splash screen...");
+            //var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
+            //titleScreenAnimation.SetValue("_fadeDuration", 0);
+            //titleScreenAnimation.SetValue("_gamepadSplash", false);
+            //titleScreenAnimation.SetValue("_introPan", false);
+            //titleScreenAnimation.Invoke("FadeInTitleLogo");
+            //ModHelper.Console.WriteLine("Done!");
 
             ModHelper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
 
@@ -32,24 +31,6 @@ namespace OuterWildsxASCII
             CameraWork();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown("c"))
-            {
-                if (asciiMode)
-                {
-                    NormalCamera.targetTexture = null;
-                    ASCIICamera.enabled = false;
-                    asciiMode = false;
-                }
-                else
-                {
-                    NormalCamera.targetTexture = cameraTexture;
-                    ASCIICamera.enabled = true;
-                    asciiMode = true;
-                }
-            }
-        }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
             CameraWork();
