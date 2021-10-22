@@ -120,49 +120,41 @@ int GetCharacterFromBrightness(float brightness)
     {
         return 2;
     }
-    if(brightness < 1)
+    if(brightness <= 1)
     {
         return 21;
     }
-    return 32;
+    return 21;
 }
 
 void WriteAsciiCharacter(float2 position)
 {    
     float3 colour;
-    //uint counter = 0;
-    //for(int i = 2; i < 6 * scaleFactor; i++){
-    //    for (int j = 2; j < 6 * scaleFactor; j++){
-    //        colour +=  cameraTexture[float2(position.x + i, position.y + j)].xyz;
-    //        if(cameraTexture[float2(position.x + i, position.y + j)].x + 
-    //           cameraTexture[float2(position.x + i, position.y + j)].y + 
-    //           cameraTexture[float2(position.x + i, position.y + j)].z > 0.05)
-    //           {
-    //               counter += 1;
-    //           }                    
-    //    }
-    //}
-    //if(counter == 0){colour = float3(0,0,0);}
-    //else {colour /= counter * scaleFactor * scaleFactor;}
-    colour = cameraTexture[position].xyz;
+    for(int i = 2; i < 6 * scaleFactor; i++){
+        for (int j = 2; j < 6 * scaleFactor; j++){
+            colour +=  cameraTexture[float2(position.x + i, position.y + j)].xyz;                
+        }
+    }
+    colour /= 16 * scaleFactor * scaleFactor;
+  
+    //colour = cameraTexture[position].xyz;
     float brightness = (colour.x + colour.y + colour.z) / 3;
-
+    brightness *= 2;
     for(int x = 0; x < 8 * scaleFactor; x++)
     {
         for (int y = 0; y < 8 * scaleFactor; y++)
-        {
-            
+        {  
            int pixelPosition = ((x * 8)/ (8 * scaleFactor));
            int bitPosition = ((y * 8)/ (8 * scaleFactor));
 
            bool set = ((font8x8_basic[GetCharacterFromBrightness(brightness)][pixelPosition] >> bitPosition) & 1) == 1;
            if(set)
            {
-              asciiTexture[float2(position.x + x, position.y + y)] = float4(colour,0);
+              asciiTexture[float2(position.x + (y), position.y + (8 - x))] = float4(colour,0);
            }
            else
            {
-              asciiTexture[float2(position.x + x, position.y + y)] = float4(colour * backBrightness,0);
+              asciiTexture[float2(position.x + (y), position.y + (8 - x))] = float4(colour * backBrightness,0);
            }
         }
     }

@@ -39,7 +39,7 @@ namespace OuterWildsxASCII
             computeShader.SetTexture(0, "asciiTexture", asciiTexture);
             computeShader.SetFloat("scaleFactor", scaleFactor);
             computeShader.SetFloat("backBrightness", backBrightness);
-            computeShader.Dispatch(0, 1920 / (8 * 8), 1080 / (8 * 8), 1);
+            computeShader.Dispatch(0, 2000 / (8 * 8), 1200 / (8 * 8), 1);
         }
 
         private void OnRenderImage(RenderTexture source, RenderTexture destination)
